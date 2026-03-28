@@ -1,7 +1,6 @@
 #pragma once
-#include "core/Object.hpp"
+#include "Core/Object.hpp"
 #include "rendering/Camera.hpp"
-#include "rendering/Color.hpp"
 
 class Renderer{
 public:
@@ -12,8 +11,4 @@ public:
     void  drawLine(Point pointA, Point pointB);
     void  drawObject(Object &toDraw);
     void  drawCamera(Camera &inViewScene);
-
-    Color getColor();
-
-    void  setColor(Color newColor);
 };

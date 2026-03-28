@@ -1,5 +1,5 @@
 #pragma once
-#include "core/Object.hpp"
+#include "Core/Object.hpp"
 #include <memory>
 #include <string>
 #include <vector>

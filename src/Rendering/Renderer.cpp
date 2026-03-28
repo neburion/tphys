@@ -10,6 +10,7 @@ Renderer::Renderer(){
     noecho();
     cbreak();
     curs_set(0);
+    nodelay(stdscr, TRUE);
     clear();
 }
 
@@ -49,37 +50,37 @@ void Renderer::drawLine(Point pointA, Point pointB){
 }
 
 void Renderer::drawObject(Object &toDraw){
-    std::vector<Point> verticies       = toDraw.shape->getVerticies();
-    int                verticiesNumber = toDraw.shape->getVerticiesNumber();
-    Vector2D           offset          = Vector2D(Point(0,0),toDraw.position);
-    double             orientation     = toDraw.orientation.getRadians();
+    std::span<const Point> vertices   = toDraw.shape->getVertices();
+    int                verticesNumber = toDraw.shape->getVerticesNumber();
+    Vector             offset         = Vector(toDraw.position.x, toDraw.position.y);
+    double             orientation    = toDraw.orientation.getRadians();
 
     if(toDraw.shape->getDrawMode() == DrawMode::CONNECTED){
-        if(verticiesNumber < 2)
-            mvwprintw(stdscr, verticies[0].y, verticies[0].x, "Error");
+        if(verticesNumber < 2)
+            mvwprintw(stdscr, vertices[0].y, vertices[0].x, "Error");
 
-        else if(verticiesNumber == 2)
-            drawLine((verticies[0]+orientation)+offset,
-                     (verticies[1]+orientation)+offset);
+        else if(verticesNumber == 2)
+            drawLine(vertices[0].rotated(orientation)+offset,
+                     vertices[1].rotated(orientation)+offset);
 
         else{
-            for(int i = 0; i < verticiesNumber-1; i++)
-                drawLine((verticies[i]+orientation)+offset,
-                         (verticies[i+1]+orientation)+offset);
-            drawLine((verticies[0]+orientation)+offset,
-                     (verticies[verticiesNumber-1]+orientation)+offset);
+            for(int i = 0; i < verticesNumber-1; i++)
+                drawLine(vertices[i].rotated(orientation)+offset,
+                         vertices[i+1].rotated(orientation)+offset);
+            drawLine(vertices[0].rotated(orientation)+offset,
+                     vertices[verticesNumber-1].rotated(orientation)+offset);
         }
     }
 
     else if(toDraw.shape->getDrawMode() == DrawMode::POINTS){
-        for(int i = 0; i < verticiesNumber; i++)
-            drawPoint(((verticies[i]+orientation)+offset).x,
-                      ((verticies[i]+orientation)+offset).y);
+        for(int i = 0; i < verticesNumber; i++)
+            drawPoint((vertices[i].rotated(orientation)+offset).x,
+                      (vertices[i].rotated(orientation)+offset).y);
     }
 }
 
 void Renderer::drawCamera(Camera &inViewScene){
-    inViewScene.updateView();
+    inViewScene.update();
     clear();
     for(int i = 0; i < inViewScene.getObjectsNumber(); i++)
         drawObject(inViewScene.getObjectByIndex(i));

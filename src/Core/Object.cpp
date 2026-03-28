@@ -1,6 +1,6 @@
 #include "core/Object.hpp"
 #include "geometry/Angle.hpp"
-#include "geometry/Vector2D.hpp"
+#include "geometry/Vector.hpp"
 
 Object::Object(const std::string      name,
                std::unique_ptr<Shape> shape,
@@ -20,8 +20,8 @@ Object::Object(const std::string      name,
 
     position       (position.x, position.y),
     orientation    (orientation),
-    velocity       (Vector2D(0, 0)),
+    velocity       (Vector(0,0)),
     angularVelocity(Angle(0)),
-    netForce       (Vector2D(0, 0)),
+    netForce       (Vector(0,0)),
     netTorque      (Angle(0))
 {}
